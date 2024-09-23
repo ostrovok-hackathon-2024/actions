@@ -1,0 +1,30 @@
+name: Track 2 Sanity Check
+run-name: Checking if the task works according to spec
+on:
+  workflow_call:
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download files
+        run: |
+          mkdir data
+          curl https://ostrovok.tech/hackathon/data/track_2/content.jsonl -o data/content.jsonl
+          curl https://ostrovok.tech/hackathon/data/track_2/reference.csv -o data/reference.csv
+      - name: Setup
+        run: |
+          sudo apt-get update && sudo apt-get install -y delta
+      - name: Build Docker image
+        run: |
+          docker build -t ${GITHUB_REPOSITORY} .
+      - name: Run parser and recommendations engine
+        run: |
+          docker run -v ${PWD}/data:/opt/data -t ${GITHUB_REPOSITORY} \
+            --content=/opt/data/content.jsonl \
+            > result.csv
+      - name: Validate output
+        run: |
+          sudo delta result.csv data/reference.csv
+
