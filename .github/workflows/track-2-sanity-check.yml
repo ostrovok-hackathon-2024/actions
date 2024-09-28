@@ -23,5 +23,5 @@ jobs:
             > result.csv
       - name: Validate output
         run: |
-          diff -qs result.csv sanity_check_out.csv > /dev/null
+          diff -qs result.csv data/sanity_check_out.csv > /dev/null
 
