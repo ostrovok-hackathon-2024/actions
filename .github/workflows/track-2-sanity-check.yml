@@ -23,5 +23,6 @@ jobs:
             > result.csv
       - name: Validate output
         run: |
-          diff result.csv data/sanity_check_out.csv
+          sudo apt-get -y update && sudo apt-get install delta
+          delta result.csv data/sanity_check_out.csv
 
