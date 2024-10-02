@@ -1,0 +1,27 @@
+name: Track 2 Sanity Check (Docker Compose version)
+run-name: Checking if the task works according to spec
+on:
+  workflow_call:
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download files
+        run: |
+          mkdir data
+          curl https://ostrovok.tech/hackathon/data/track_2/sanity_check_in.csv -o data/sanity_check_in.csv
+          curl https://ostrovok.tech/hackathon/data/track_2/sanity_check_out.csv -o data/sanity_check_out.csv
+      - name: Build Docker image
+        run: |
+          docker build -t ${GITHUB_REPOSITORY} .
+      - name: Run the solution
+        run: |
+          docker compose run -v ${PWD}/data:/opt/data -t app \
+            --content=/opt/data/sanity_check_in.csv \
+            > result.csv
+      - name: Validate output
+        run: |
+          diff -qs result.csv data/sanity_check_out.csv > /dev/null
+
