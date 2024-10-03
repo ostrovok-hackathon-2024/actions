@@ -23,7 +23,7 @@ jobs:
       - name: Validate output
         run: |
           # check that the resulting file has more than 1 row
-          if [ $(cat result.csv | wc -l | bc) -gt 1 ]; then return 0; else return 1; fi;
+          if [ $(cat result.csv | wc -l | bc) -gt 1 ]; then exit 0; else exit 1; fi;
           # check that the first row contains heading as defined in sanity_check_in.csv
-          if [ $(head -1 result.csv | sed 's/\n//' | sed 's/\r//') = "rate_name,class,quality,bathroom,bedding,capacity,club,bedrooms,balcony,view,floor" ]; then return 0; else return 1; fi
+          if [ $(head -1 result.csv | sed 's/\n//' | sed 's/\r//') = "rate_name,class,quality,bathroom,bedding,capacity,club,bedrooms,balcony,view,floor" ]; then exit 0; else exit 1; fi
 
